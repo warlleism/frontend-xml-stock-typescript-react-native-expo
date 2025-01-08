@@ -17,7 +17,7 @@ export default function TabBar({ state, descriptors, navigation }: any) {
 
   
     return (
-        <View className='absolute bottom-0 py-[20px] w-full flex-row justify-between items-center bg-[#fff] '>
+        <View className='absolute bottom-0 py-[20px] w-full flex-row justify-between items-center bg-[#fff]'>
             {state.routes.map((route: any, index: number) => {
 
                 const { options } = descriptors[route.key];
