@@ -1,7 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { TouchableOpacity, View } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import Ionicons from '@expo/vector-icons/Ionicons';
 
 type IconKey = 'index' | 'formulario';
 
@@ -9,13 +8,12 @@ export default function TabBar({ state, descriptors, navigation }: any) {
 
     const icons = {
         'index': (props: any) => <AntDesign name="home" size={25} color="#fff" {...props} />,
-        'formulario': (props: any) => <Ionicons name="create-outline" size={25} color="#fff" {...props} />,
+        'formulario': (props: any) => <AntDesign name="form" size={25} color="#fff" {...props} />,
     };
 
-    const primaryColor = '#FF8000';
+    const primaryColor = '#000';
     const secondaryColor = '#737373';
 
-  
     return (
         <View className='absolute bottom-0 py-[20px] w-full flex-row justify-between items-center bg-[#fff]'>
             {state.routes.map((route: any, index: number) => {
@@ -66,11 +64,12 @@ export default function TabBar({ state, descriptors, navigation }: any) {
                     >
                         {icons[route.name as IconKey]({
                             color: isFocused ? primaryColor : secondaryColor,
+                            size: isFocused ? 27 : 25
                         })}
 
-                        <Text style={{ color: isFocused ? primaryColor : secondaryColor }}>
+                        {/* <Text style={{ color: isFocused ? primaryColor : secondaryColor }}>
                             {label.replace('(tabs)/', '') == 'index' ? "Home" : label.replace('(tabs)/', '')}
-                        </Text>
+                        </Text> */}
                     </TouchableOpacity>
                 );
             })}
