@@ -1,4 +1,5 @@
-import { ActivityIndicator, Dimensions, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Dimensions, ScrollView, Text, View } from "react-native";
+import { Stack, TextInput, IconButton } from "@react-native-material/core";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Controller, useForm } from 'react-hook-form';
 import { Picker } from '@react-native-picker/picker';
@@ -40,10 +41,9 @@ export default function FormularioScreen() {
             }
         });
 
-    console.log(xmlForm);
 
     return (
-        <SafeAreaView>
+        <SafeAreaView className=" bg-[#fff]">
             <ToastManager
                 width={width - 50}
                 animationIn={"zoomIn"}
@@ -52,20 +52,18 @@ export default function FormularioScreen() {
             />
             <BackButton />
             <ScrollView
-                className="p-5 bg-[#fff]">
+                className="p-5 ">
                 <View
-                    className="mb-1 mt-4 w-full"
+                    className=" w-full"
                     pointerEvents={xmlForm ? "none" : "auto"}
                     style={{ opacity: xmlForm ? 0.2 : 1 }}>
-                    <Text className="mb-2">Nome:</Text>
                     <Controller
                         control={control}
                         render={({ field: { onChange, onBlur, value } }) => (
                             <TextInput
-
-                                className="w-[100%] border border-[#222222] rounded-md py-5 p-2 bg-[#fff]  "
-                                placeholder="Ibuprofeno 400mg"
-                                placeholderTextColor={'#e6e6e6'}
+                                color="#212121"
+                                label="Nome"
+                                className="w-[100%] border border-[#9e9e9e] rounded-[2px] py-5 p-2 bg-[#fff]"
                                 onBlur={onBlur}
                                 onChangeText={value => onChange(value)}
                                 value={value}
@@ -74,22 +72,23 @@ export default function FormularioScreen() {
                         name="name"
                         rules={{ required: true }}
                     />
-                    {errors.name && xmlForm == null && <Text className="text-[#616161] text-sm font-">Campo precisa ser preenchido.</Text>}
+                    <Text
+                        style={{ opacity: errors.name && xmlForm == false ? 1 : 0 }}
+                        className="text-[#616161] text-[10px]">Campo precisa ser preenchido.</Text>
                 </View>
                 <View
-                    className="mb-1 mt-4 w-full"
+                    className="mb-1 mt-2 w-full"
                     pointerEvents={xmlForm ? "none" : "auto"}
                     style={{ opacity: xmlForm ? 0.2 : 1 }}>
-                    <Text className="mb-2">Preço:</Text>
                     <Controller
                         control={control}
                         render={({ field: { onChange, onBlur, value } }) => (
                             <TextInput
-                                className="w-[100%] border border-[#222222] rounded-md py-5 p-2 bg-[#fff]  "
-                                placeholder="Preço"
+                                color="#212121"
+                                label="Preço"
+                                className="w-[100%] border border-[#9e9e9e] rounded-[2px] py-5 p-2 bg-[#fff]"
                                 keyboardType="numeric"
                                 onBlur={onBlur}
-                                placeholderTextColor={'#e6e6e6'}
                                 onChangeText={value => onChange(value)}
                                 value={value}
                             />
@@ -97,14 +96,15 @@ export default function FormularioScreen() {
                         name="price"
                         rules={{ required: true }}
                     />
-                    {errors.price && xmlForm == null && <Text className="text-[#616161] text-sm font-">Campo precisa ser preenchido.</Text>}
+                    <Text
+                        style={{ opacity: errors.price && xmlForm == false ? 1 : 0 }}
+                        className="text-[#616161] text-[10px]">Campo precisa ser preenchido.</Text>
                 </View>
                 <View
-                    className="mb-1 mt-4 w-full"
+                    className="mb-1 mt-2 w-full"
                     style={{ opacity: xmlForm ? 0.2 : 1 }}
                     pointerEvents={xmlForm ? "none" : "auto"}>
-                    <Text className="mb-2">Categoria:</Text>
-                    <View className=" bg-[#fff] border border-[#222222] rounded-md">
+                    <View className=" bg-[#fff] border border-[#9e9e9e] rounded-[2px]">
                         <Controller
                             control={control}
                             render={({ field: { onChange, value } }) => (
@@ -124,25 +124,29 @@ export default function FormularioScreen() {
                             rules={{ required: true }}
                         />
                         {
-                            loading && <ActivityIndicator className="absolute top-[30%] right-[10%]" />
+                            loading && <ActivityIndicator
+                                color={"#000"}
+                                className="absolute top-[30%] right-[10%]"
+                            />
                         }
                     </View>
                 </View>
-                {errors.category && xmlForm == null && <Text className="text-[#616161] text-sm font-">Campo precisa ser preenchido.</Text>}
+                <Text
+                    style={{ opacity: errors.category && xmlForm == false ? 1 : 0 }}
+                    className="text-[#616161] text-[10px]">Campo precisa ser preenchido.</Text>
                 <View
-                    className="mb-1 mt-4 w-full"
+                    className="mb-1 mt-2 w-full"
                     pointerEvents={xmlForm ? "none" : "auto"}
                     style={{ opacity: xmlForm ? 0.2 : 1 }}>
-                    <Text className="mb-2">Quantidade:</Text>
                     <Controller
                         control={control}
                         render={({ field: { onChange, onBlur, value } }) => (
                             <TextInput
+                                color="#212121"
+                                label="Quantidade"
                                 keyboardType="numeric"
-                                className="w-[100%] border border-[#222222] rounded-md py-5 p-2 bg-[#fff]  "
-                                placeholder="Quantidade"
+                                className="w-[100%] border border-[#9e9e9e] rounded-[2px] py-5 p-2 bg-[#fff]"
                                 onBlur={onBlur}
-                                placeholderTextColor={'#e6e6e6'}
                                 onChangeText={value => onChange(value)}
                                 value={value}
                             />
@@ -150,23 +154,24 @@ export default function FormularioScreen() {
                         name="quantity"
                         rules={{ required: true }}
                     />
-                    {errors.quantity && xmlForm == null && <Text className="text-[#616161] text-sm font-">Campo precisa ser preenchido.</Text>}
+                    <Text
+                        style={{ opacity: errors.quantity && xmlForm == false ? 1 : 0 }}
+                        className="text-[#616161] text-[10px]">Campo precisa ser preenchido.</Text>
                 </View>
                 <View
-                    className="mb-1 mt-4 w-full"
+                    className="mb-1 mt-2 w-full"
                     pointerEvents={xmlForm ? "none" : "auto"}
                     style={{ opacity: xmlForm ? 0.2 : 1 }}>
-                    <Text className="mb-2">Descrição:</Text>
                     <Controller
                         control={control}
                         render={({ field: { onChange, onBlur, value } }) => (
                             <TextInput
+                                color="#212121"
+                                label="Descrição"
                                 multiline
                                 numberOfLines={100}
-                                className="w-[100%] h-[120px] border border-[#222222] rounded-md py-5 p-2 bg-[#fff]  "
-                                placeholder="Descrição"
+                                className="w-[100%] h-[120px] border border-[#9e9e9e] rounded-[2px] py-5 p-2 bg-[#fff]  "
                                 onBlur={onBlur}
-                                placeholderTextColor={'#e6e6e6'}
                                 onChangeText={value => onChange(value)}
                                 value={value}
                             />
@@ -174,12 +179,14 @@ export default function FormularioScreen() {
                         name="description"
                         rules={{ required: true }}
                     />
-                    {errors.description && xmlForm == null && <Text className="text-[#616161] text-sm font-">Campo precisa ser preenchido.</Text>}
+                    <Text
+                        style={{ opacity: errors.description && xmlForm == false ? 1 : 0 }}
+                        className="text-[#616161] text-sm">Campo precisa ser preenchido.</Text>
                 </View>
                 <View
-                    style={{ marginBottom: height / 4 }}
+                    style={{ marginBottom: height / 5 }}
                     className="mt-4 w-full">
-                    <XmlFilePicker setXmlForm={setXmlForm} />
+                    <XmlFilePicker setXmlForm={setXmlForm} reset={reset} />
                     {!xmlForm && <ButtomSubmit handleSubmit={handleSubmit} />}
                 </View>
             </ScrollView>
