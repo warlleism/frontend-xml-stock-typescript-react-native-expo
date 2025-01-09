@@ -18,7 +18,7 @@ export default function BackButton() {
             <TouchableOpacity onPress={handleBack} >
                 <Feather name="arrow-left" size={30} color={"#000"} />
             </TouchableOpacity>
-            <Text className="text-2xl font-semibold text-black ">Formulario</Text>
+            <Text className="text-2xl font-semibold text-black ">Formulário</Text>
             <View className="w-10 h-10" />
         </View>
     );

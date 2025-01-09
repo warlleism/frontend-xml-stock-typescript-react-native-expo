@@ -1,4 +1,4 @@
-import React, { useState, useTransition } from 'react';
+import React, { useState } from 'react';
 import { View, TouchableOpacity, Text } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import AntDesign from '@expo/vector-icons/AntDesign';
@@ -8,12 +8,12 @@ import Entypo from '@expo/vector-icons/Entypo';
 import { ActivityIndicator } from '@react-native-material/core';
 
 export default function XmlFilePicker({ setXmlForm, reset }: any) {
-
     const [file, setFile] = useState<{ name: string, size: number | undefined } | null>(null);
     const [isPending, setIsPending] = useState(false);
     const [xmlContent, setXmlContent] = useState<any>();
 
     const handleFilePick = async () => {
+
         setIsPending(true);
         const result = await DocumentPicker.getDocumentAsync({
             type: 'text/xml',
@@ -23,9 +23,10 @@ export default function XmlFilePicker({ setXmlForm, reset }: any) {
             await new Promise((resolve) => setTimeout(resolve, 2000));
             setFile({ name: result?.assets[0].name, size: result?.assets[0].size });
             setXmlContent(result?.assets);
-            setXmlForm(true)
+            setXmlForm(true);
         }
         setIsPending(false);
+
     };
 
     const sendFile = async () => {
@@ -35,7 +36,7 @@ export default function XmlFilePicker({ setXmlForm, reset }: any) {
                 return;
             }
 
-            const apiUrl = "http://192.168.0.166:3000/product/create"
+            const apiUrl = "http://192.168.0.166:3000/product/create";
             const formData = new FormData();
             const file = xmlContent[0];
 
@@ -58,13 +59,19 @@ export default function XmlFilePicker({ setXmlForm, reset }: any) {
             Toast.success("Cadastrado feito com sucesso!");
             setXmlContent(null);
             setFile(null);
-            setXmlForm(false)
-            reset()
+            setXmlForm(false);
+            reset();
         } catch (error) {
             console.error("Erro ao enviar o arquivo:", error);
-            setXmlForm(false)
+            setXmlForm(false);
             setFile(null);
         }
+    };
+
+    const resetFilds = () => {
+        setXmlForm(false);
+        setFile(null);
+        setXmlContent(null);
     };
 
     return (
@@ -74,45 +81,35 @@ export default function XmlFilePicker({ setXmlForm, reset }: any) {
                     <View />
                     <TouchableOpacity
                         className='flex-row items-center gap-2'
-                        onPress={() => {
-                            setXmlForm(false)
-                            setFile(null);
-                            setXmlContent(null)
-                        }}>
+                        onPress={() => resetFilds()}>
                         <Text>Remover</Text>
-                        <Entypo name="trash" size={20} color="black" />
+                        <Entypo name="trash" size={20} color="red" />
                     </TouchableOpacity>
                 </View>
             )}
             <TouchableOpacity
-                style={{ backgroundColor: '#fff', borderColor: xmlContent ? '#b9b9b9' : '#737373' }}
-                className={`w-[100%] border rounded-sm py-6 p-2  justify-center items-center gap-1 border-dashed`}
+                style={{ backgroundColor: '#fff', borderColor: "#2196f3" }}
+                className={`w-[100%] h-[120px] border rounded-sm py-6 p-2  justify-center items-center gap-1 border-dashed`}
                 onPress={handleFilePick}>
-                <AntDesign
-                    className={`${isPending ? 'hidden' : 'flex'} `}
-                    name={xmlContent ? "filetext1" : "upload"} size={20} color={xmlContent ? '#4a4a4a' : '#737373'} />
-
-                {
-                    isPending ? <ActivityIndicator color="#737373" /> :
-                        file ?
-                            (
-                                <>
-                                    <Text style={{ color: '#4a4a4a', fontWeight: "600" }}>{file.name}</Text>
-                                    <Text style={{ color: '#737373', fontWeight: "600", fontSize: 10 }}>{file.size}KB</Text>
-                                </>
-                            )
-                            :
-                            <Text style={{ color: xmlContent ? '#fff' : '#737373' }}>Selecionar Arquivo (.xml)</Text>
+                <AntDesign className={`${isPending ? 'hidden' : 'flex'}`} name={xmlContent ? "filetext1" : "upload"} size={20} color={"#2196f3"} />
+                {isPending ?
+                    <ActivityIndicator color="#737373" /> :
+                    file ?
+                        <View className="flex-col items-center">
+                            <Text style={{ color: '#4a4a4a', fontWeight: "600" }}>{file.name}</Text>
+                            <Text style={{ color: '#737373', fontWeight: "600", fontSize: 10 }}>{file.size}KB</Text>
+                        </View>
+                        :
+                        <View className="flex-col items-center">
+                            <Text style={{ color: '#737373' }}>Selecionar Arquivo (.xml)</Text>
+                            <Text style={{ color: '#B2B2B2', fontSize: 10 }}>Enviar produtos através de um arquivo</Text>
+                        </View>
                 }
-
             </TouchableOpacity>
 
-            {
-                xmlContent && <TouchableOpacity className="mb-1 mt-4 w-full bg-[#000000] rounded-sm  py-6" onPress={sendFile}>
-                    <Text className="text-white text-center text-xl">Enviar (.xml)</Text>
-                </TouchableOpacity>
-            }
-
+            <TouchableOpacity className={`${xmlContent ? 'flex' : 'hidden'} mb-1 mt-4 w-full bg-[#2196f3] rounded-sm py-6`} onPress={sendFile}>
+                <Text className="text-white text-center text-xl">Enviar (.xml)</Text>
+            </TouchableOpacity>
         </View>
     );
-};
+}
