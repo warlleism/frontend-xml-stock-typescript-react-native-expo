@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity, Text } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
-import * as FileSystem from 'expo-file-system';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
 export default function XmlFilePicker({ setXmlContent, xmlContent }: any) {
@@ -13,10 +12,8 @@ export default function XmlFilePicker({ setXmlContent, xmlContent }: any) {
         });
 
         if (result?.assets) {
-            const fileUri = result?.assets[0].uri;
-            const fileContent = await FileSystem.readAsStringAsync(fileUri);
             setFileName(result?.assets[0].name);
-            setXmlContent({ fileContent: fileContent, result: result?.assets[0].name });
+            setXmlContent(result?.assets);
         }
     };
     return (

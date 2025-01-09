@@ -15,47 +15,49 @@ export default function FormularioScreen() {
         { manual: true }
     )
 
-    const [xmlContent, setXmlContent] = useState<{ fileContent: string, result: string }>();
+    const [xmlContent, setXmlContent] = useState<any>();
 
     const sendFile = async () => {
+
         try {
+
+
             if (!xmlContent) {
-                console.log('Erro', 'Selecione um arquivo antes de enviar.');
+                alert("Por favor, selecione um arquivo.");
                 return;
             }
 
+            const apiUrl = "http://192.168.0.166:3000/product/create"
             const formData = new FormData();
-            const blob = new Blob([xmlContent.fileContent], { type: 'text/xml' });
-            formData.append('file', blob, xmlContent.result);
+            const file = xmlContent[0];
 
-            const response = await axios.post('http://192.168.0.166:3000/product/create', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
+            const xmlFile = {
+                name: file.name,
+                uri: file.uri,
+                type: file.mimeType,
+                size: file.size
+            };
+
+            formData.append("file", xmlFile as any);
+
+            const { data } = await axios.post(apiUrl, formData, {
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "multipart/form-data",
+                },
             });
 
-            if (response.status === 201) {
-                console.log('Sucesso', 'Arquivo enviado com sucesso!');
-            } else {
-                console.log('Erro', 'Ocorreu um erro ao enviar o arquivo.');
-            }
+            console.log("Resposta do servidor:", data);
+
         } catch (error) {
-            console.log('Erro', error || 'Ocorreu um erro ao enviar o arquivo.');
+            console.error("Erro ao enviar o arquivo:", error);
         }
+
     };
 
-    axios.interceptors.request.use(request => {
-        console.log('Starting Request', request);
-        return request;
-    });
-
-    axios.interceptors.response.use(response => {
-        console.log('Response:', response);
-        return response;
-    });
-
-
-    // useEffect(() => {
-    //     refetch({ data: { delay: 2 } })
-    // }, [])
+    useEffect(() => {
+        refetch({ data: { delay: 2 } })
+    }, [])
 
     const {
         register,
