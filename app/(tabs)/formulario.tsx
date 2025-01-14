@@ -12,20 +12,29 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod"
+import useGetCategory from "../hooks/useGetCategory";
+import FormContainer from "../components/formContainer/formContainer";
 const { width, height } = Dimensions.get('window');
+
+
+const createUserFormSchema = z.object({
+    name: z.string().min(1, "Nome do produto é obrigatório"),
+    price: z.number().min(1, "Preço é obrigatório"),
+    category: z.string().min(1, "Categoria é obrigatória"),
+    description: z.string().min(1, "Descrição é obrigatória"),
+    quantity: z.number().min(1, "Quantidade é obrigatória"),
+    dosage: z.string().min(1, "Dosagem é obrigatória"),
+    laboratory: z.string().min(1, "Laboratório é obrigatório"),
+    requiresPrescription: z.string().min(1, "Prescrição é obrigatória"),
+});
+
+type createUserFormData = z.infer<typeof createUserFormSchema>
 
 export default function FormularioScreen() {
 
-    const [{ data, loading, error }, refetch] = useAxios(
-        'http://192.168.0.166:3000/product/getCategory',
-        { manual: true }
-    )
-
-    const [xmlForm, setXmlForm] = useState<boolean>(false);
-
-    useEffect(() => {
-        refetch({ data: { delay: 2 } })
-    }, [])
+    const { data, loading, error, xmlForm, setXmlForm } = useGetCategory()
 
     const {
         register,
@@ -33,16 +42,19 @@ export default function FormularioScreen() {
         handleSubmit,
         control,
         reset,
-        formState: { errors } } = useForm({
+        formState: { errors } } = useForm<createUserFormData>({
+            resolver: zodResolver(createUserFormSchema),
             defaultValues: {
-                name: '',
-                price: '',
-                category: '',
-                description: '',
-                quantity: '',
-            }
+                name: "",
+                price: 0,
+                category: "",
+                description: "",
+                quantity: 0,
+                dosage: "",
+                laboratory: "",
+                requiresPrescription: "",
+            },
         });
-
 
     return (
         <SafeAreaView className=" bg-[#fff]">
@@ -53,19 +65,17 @@ export default function FormularioScreen() {
                 duration={2000}
             />
             <BackButton />
-            <ScrollView
-                className="p-5 ">
-                <View
-                    className="w-full h-[60px] mb-6 "
-                    pointerEvents={xmlForm ? "none" : "auto"}
-                    style={{ opacity: xmlForm ? 0.2 : 1 }}>
-                    <View className="w-full h-full flex-row overflow-hidden border-[.9px] border-[#8298ab] rounded-lg">
+            <ScrollView className="p-5">
+                <FormContainer xmlForm={xmlForm}>
+                    <View className="w-full h-full flex-row overflow-hidden">
                         <View className="w-[15%] h-full bg-[#2196f3] flex-row justify-center items-center border-r-[.9px]  border-[#8298ab]">
                             <AntDesign name="user" size={24} color="white" />
                         </View>
                         <View className="w-[85%] h-[100%]">
                             <Controller
                                 control={control}
+                                name="name"
+                                rules={{ required: true }}
                                 render={({ field: { onChange, onBlur, value } }) => (
                                     <TextInput
                                         placeholder="Nome do produto"
@@ -77,68 +87,66 @@ export default function FormularioScreen() {
                                         value={value}
                                     />
                                 )}
-                                name="name"
-                                rules={{ required: true }}
                             />
                         </View>
                     </View>
                     <Text
                         style={{ opacity: errors.name && xmlForm == false ? 1 : 0 }}
-                        className="text-[#616161] text-[10px]">Campo precisa ser preenchido.</Text>
-                </View>
-                <View
-                    className="w-full h-[60px] mb-6 "
-                    pointerEvents={xmlForm ? "none" : "auto"}
-                    style={{ opacity: xmlForm ? 0.2 : 1 }}>
-                    <View className="w-full h-full flex-row overflow-hidden border-[.9px] border-[#8298ab] rounded-lg">
+                        className="text-[#616161] text-[10px]">
+                        {errors.name?.message !== "Required" ? errors.name?.message : "Preencha o nome do produto"}
+                    </Text>
+                </FormContainer>
+                <FormContainer xmlForm={xmlForm}>
+                    <View className="w-full h-full flex-row overflow-hidden">
                         <View className="w-[15%] h-full bg-[#2196f3] flex-row justify-center items-center border-r-[.9px] border-[#8298ab]">
                             <MaterialIcons name="attach-money" size={24} color="white" />
                         </View>
                         <View className="w-[85%] h-[100%]">
                             <Controller
                                 control={control}
+                                name="price"
+                                rules={{ required: true }}
                                 render={({ field: { onChange, onBlur, value } }) => (
                                     <TextInput
                                         placeholder="Preço"
                                         placeholderTextColor={"#d1d1d1"}
                                         style={{ height: "100%" }}
-                                        className=" w-full "
+                                        className="w-full"
                                         keyboardType="numeric"
                                         onBlur={onBlur}
-                                        onChangeText={value => onChange(value)}
-                                        value={value}
+                                        onChangeText={(text) => {
+                                            const numericValue = parseFloat(text);
+                                            onChange(isNaN(numericValue) ? "" : numericValue);
+                                        }}
+                                        value={value.toString()}
                                     />
                                 )}
-                                name="price"
-                                rules={{ required: true }}
                             />
                         </View>
                     </View>
                     <Text
                         style={{ opacity: errors.price && xmlForm == false ? 1 : 0 }}
                         className="text-[#616161] text-[10px]">
-                        Campo precisa ser preenchido.
+                        {errors.price?.message !== "Required" ? errors.price?.message : "Preencha o preço do produto"}
                     </Text>
-                </View>
+                </FormContainer>
                 <View className="w-full h-[60px] mb-6 ">
-                    <View
-                        className="w-full flex flex-row justify-center items-center h-[60px] border-[.9px] border-[#8298ab] overflow-hidden rounded-lg"
-                        style={{ opacity: xmlForm ? 0.2 : 1 }}
-                        pointerEvents={xmlForm ? "none" : "auto"}
-                    >
+                    <FormContainer xmlForm={xmlForm}>
                         <View className="w-[15%] h-full bg-[#2196f3] flex-row  justify-center items-center border-r-[.9px] border-[#8298ab]">
                             <MaterialCommunityIcons name="medical-bag" size={24} color="white" />
                         </View>
                         <View className="w-[85%] h-full">
                             <Controller
                                 control={control}
+                                name="category"
+                                rules={{ required: true }}
                                 render={({ field: { onChange, value } }) => (
                                     <Picker
                                         mode="dropdown"
                                         style={{ height: "100%" }}
                                         className=" w-full"
                                         selectedValue={value} onValueChange={(itemValue) => onChange(itemValue)}>
-                                        <Picker.Item label="Selecione..." value="" style={{ color: "#d1d1d1" }} />
+                                        <Picker.Item label="Selecione a categoria..." value="" style={{ color: "#d1d1d1" }} />
                                         {
                                             data?.data.map((item: string, index: number) => {
                                                 return (
@@ -148,34 +156,26 @@ export default function FormularioScreen() {
                                         }
                                     </Picker>
                                 )}
-                                name="category"
-                                rules={{ required: true }}
                             />
-                            {
-                                loading && <ActivityIndicator
-                                    className="absolute top-[30%] right-[10%]"
-                                />
-                            }
+                            {loading && <ActivityIndicator className="absolute top-[30%] right-[10%]" />}
                         </View>
-                    </View>
+                    </FormContainer>
                     <Text
                         style={{ opacity: errors.category && xmlForm == false ? 1 : 0 }}
                         className="text-[#616161] text-[10px]">
-                        Campo precisa ser preenchido.
+                        {errors.category?.message !== "Required" ? errors.category?.message : "Preencha a categoria do produto"}
                     </Text>
                 </View>
-
-                <View
-                    className="w-full h-[60px] mb-6  "
-                    pointerEvents={xmlForm ? "none" : "auto"}
-                    style={{ opacity: xmlForm ? 0.2 : 1 }}>
-                    <View className="w-full h-full flex-row overflow-hidden border-[.9px] border-[#8298ab] rounded-lg">
+                <FormContainer xmlForm={xmlForm}>
+                    <View className="w-full h-full flex-row overflow-hidden">
                         <View className="w-[15%] h-full bg-[#2196f3] flex-row justify-center items-center border-r-[.9px]  border-[#8298ab]">
                             <FontAwesome6 name="box-open" size={20} color="white" />
                         </View>
                         <View className="w-[85%] h-[100%]">
                             <Controller
                                 control={control}
+                                name="quantity"
+                                rules={{ required: true }}
                                 render={({ field: { onChange, onBlur, value } }) => (
                                     <TextInput
                                         placeholder="Quantidade"
@@ -185,43 +185,134 @@ export default function FormularioScreen() {
                                         keyboardType="numeric"
                                         onBlur={onBlur}
                                         onChangeText={value => onChange(value)}
-                                        value={value}
+                                        value={value.toString()}
                                     />
                                 )}
-                                name="quantity"
-                                rules={{ required: true }}
                             />
                         </View>
                     </View>
                     <Text
                         style={{ opacity: errors.quantity && xmlForm == false ? 1 : 0 }}
-                        className="text-[#616161] text-[10px]">Campo precisa ser preenchido.</Text>
+                        className="text-[#616161] text-[10px]">
+                        {errors.quantity?.message !== "Required" ? errors.quantity?.message : "Preencha a quantidade do produto"}
+                    </Text>
+                </FormContainer>
+                <FormContainer xmlForm={xmlForm}>
+                    <View className="w-full h-full flex-row overflow-hidden">
+                        <View className="w-[15%] h-full bg-[#2196f3] flex-row justify-center items-center border-r-[.9px]  border-[#8298ab]">
+                            <FontAwesome6 name="box-open" size={20} color="white" />
+                        </View>
+                        <View className="w-[85%] h-[100%]">
+                            <Controller
+                                control={control}
+                                name="dosage"
+                                rules={{ required: true }}
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                    <TextInput
+                                        placeholder="Dosagem do produto"
+                                        placeholderTextColor={"#d1d1d1"}
+                                        style={{ height: "100%" }}
+                                        className=" w-full "
+                                        keyboardType="numeric"
+                                        onBlur={onBlur}
+                                        onChangeText={value => onChange(value)}
+                                        value={value.toString()}
+                                    />
+                                )}
+                            />
+                        </View>
+                    </View>
+                    <Text
+                        style={{ opacity: errors.dosage && xmlForm == false ? 1 : 0 }}
+                        className="text-[#616161] text-[10px]">
+                        {errors.dosage?.message !== "Required" ? errors.dosage?.message : "Preencha a dosagem do produto"}
+                    </Text>
+                </FormContainer>
+                <FormContainer xmlForm={xmlForm}>
+                    <View className="w-full h-full flex-row overflow-hidden">
+                        <View className="w-[15%] h-full bg-[#2196f3] flex-row justify-center items-center border-r-[.9px]  border-[#8298ab]">
+                            <FontAwesome6 name="box-open" size={20} color="white" />
+                        </View>
+                        <View className="w-[85%] h-[100%]">
+                            <Controller
+                                control={control}
+                                name="laboratory"
+                                rules={{ required: true }}
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                    <TextInput
+                                        placeholder="laboratorio do produto"
+                                        placeholderTextColor={"#d1d1d1"}
+                                        style={{ height: "100%" }}
+                                        className=" w-full "
+                                        keyboardType="numeric"
+                                        onBlur={onBlur}
+                                        onChangeText={value => onChange(value)}
+                                        value={value.toString()}
+                                    />
+                                )}
+                            />
+                        </View>
+                    </View>
+                    <Text
+                        style={{ opacity: errors.laboratory && xmlForm == false ? 1 : 0 }}
+                        className="text-[#616161] text-[10px]">
+                        {errors.laboratory?.message !== "Required" ? errors.laboratory?.message : "Preencha o laboratório do produto"}
+                    </Text>
+                </FormContainer>
+                <View className="w-full h-[60px] mb-6 ">
+                    <FormContainer xmlForm={xmlForm}>
+                        <View className="w-[15%] h-full bg-[#2196f3] flex-row  justify-center items-center border-r-[.9px] border-[#8298ab]">
+                            <MaterialCommunityIcons name="medical-bag" size={24} color="white" />
+                        </View>
+                        <View className="w-[85%] h-full">
+                            <Controller
+                                control={control}
+                                name="requiresPrescription"
+                                rules={{ required: true }}
+                                render={({ field: { onChange, value } }) => (
+                                    <Picker
+                                        mode="dropdown"
+                                        style={{ height: "100%" }}
+                                        className=" w-full"
+                                        selectedValue={value} onValueChange={(itemValue) => onChange(itemValue)}>
+                                        <Picker.Item label="Necessidade de Prescrição..." value="" style={{ color: "#d1d1d1" }} />
+                                        <Picker.Item label={"Sim"} value={true} />
+                                        <Picker.Item label={"Não"} value={false} />
+                                    </Picker>
+                                )}
+                            />
+                        </View>
+                    </FormContainer>
+                    <Text
+                        style={{ opacity: errors.requiresPrescription && xmlForm == false ? 1 : 0 }}
+                        className="text-[#616161] text-[10px]">
+                        {errors.requiresPrescription?.message !== "Required" ? errors.requiresPrescription?.message : "Preencha a categoria do produto"}
+                    </Text>
                 </View>
-                <View
-                    className="w-full"
-                    pointerEvents={xmlForm ? "none" : "auto"}
-                    style={{ opacity: xmlForm ? 0.2 : 1 }}>
+                <FormContainer xmlForm={xmlForm} height={150}>
                     <Controller
                         control={control}
+                        name="description"
+                        rules={{ required: true }}
                         render={({ field: { onChange, onBlur, value } }) => (
                             <TextInput
                                 placeholder="Descrição"
                                 placeholderTextColor={"#d1d1d1"}
                                 multiline
                                 numberOfLines={100}
-                                className="w-[100%] h-[120px] border-[.9px] border-[#8298ab] rounded-[2px] py-5 p-2 bg-[#fff]  "
+                                className="w-[100%] h-[100%]"
                                 onBlur={onBlur}
                                 onChangeText={value => onChange(value)}
                                 value={value}
                             />
                         )}
-                        name="description"
-                        rules={{ required: true }}
                     />
                     <Text
                         style={{ opacity: errors.description && xmlForm == false ? 1 : 0 }}
-                        className="text-[#616161] text-sm">Campo precisa ser preenchido.</Text>
-                </View>
+                        className="text-[#616161] text-[10px]">
+                        {errors.description?.message !== "Required" ? errors.description?.message : "Preencha a descrição do produto"}
+                    </Text>
+                </FormContainer>
                 <View
                     style={{ marginBottom: height / 5 }}
                     className="mt-4 w-full">

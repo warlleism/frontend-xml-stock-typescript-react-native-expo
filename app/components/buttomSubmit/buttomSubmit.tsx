@@ -6,6 +6,7 @@ export default function ButtomSubmit({ handleSubmit }: ButtomSubmitProps) {
         <TouchableOpacity
             className="mb-1 mt-4 w-full bg-[#2196f3] rounded-sm py-6"
             onPress={handleSubmit((data: any) => {
+                console.log("texte");
                 console.log(data);
             })} >
             <Text className="text-white text-center text-xl">Enviar</Text>

@@ -8,6 +8,7 @@ import Entypo from '@expo/vector-icons/Entypo';
 import { ActivityIndicator } from '@react-native-material/core';
 
 export default function XmlFilePicker({ setXmlForm, reset }: any) {
+    
     const [file, setFile] = useState<{ name: string, size: number | undefined } | null>(null);
     const [isPending, setIsPending] = useState(false);
     const [xmlContent, setXmlContent] = useState<any>();
