@@ -36,12 +36,6 @@ export default function ActiveFormScreen() {
             className="px-5"
             style={{ width: width, height: height - 200 }}
         >
-            <ToastManager
-                width={width - 50}
-                animationIn={"zoomIn"}
-                animationOut={"zoomOut"}
-                duration={2000}
-            />
             <View>
                 <View className="mb-1">
                     <FormContainer xmlForm={xmlForm}>

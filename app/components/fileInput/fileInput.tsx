@@ -56,9 +56,6 @@ export default function XmlFilePicker({ setXmlForm, reset, url }: any) {
                 },
             });
 
-            console.log(apiUrl)
-            console.log(data)
-
             Toast.success("Cadastrado feito com sucesso!");
             setXmlContent(null);
             setFile(null);
@@ -66,6 +63,7 @@ export default function XmlFilePicker({ setXmlForm, reset, url }: any) {
             reset();
         } catch (error) {
             console.error("Erro ao enviar o arquivo:", error);
+            Toast.error("Erro ao enviar o arquivo!");
             setXmlForm(false);
             setFile(null);
         }

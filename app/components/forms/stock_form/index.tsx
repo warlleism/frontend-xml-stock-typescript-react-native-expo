@@ -52,12 +52,6 @@ export default function FormularioScreen() {
         <SafeAreaView
             style={{ flex: 1, width: width }}
             className="flex-1 w-full">
-            <ToastManager
-                width={width - 50}
-                animationIn={"zoomIn"}
-                animationOut={"zoomOut"}
-                duration={2000}
-            />
             <ScrollView className="p-5">
                 <View className="mb-1">
                     <FormContainer xmlForm={xmlForm}>
