@@ -7,14 +7,13 @@ import axios from 'axios';
 import Entypo from '@expo/vector-icons/Entypo';
 import { ActivityIndicator } from '@react-native-material/core';
 
-export default function XmlFilePicker({ setXmlForm, reset }: any) {
-    
+export default function XmlFilePicker({ setXmlForm, reset, url }: any) {
+
     const [file, setFile] = useState<{ name: string, size: number | undefined } | null>(null);
     const [isPending, setIsPending] = useState(false);
     const [xmlContent, setXmlContent] = useState<any>();
 
     const handleFilePick = async () => {
-
         setIsPending(true);
         const result = await DocumentPicker.getDocumentAsync({
             type: 'text/xml',
@@ -37,7 +36,7 @@ export default function XmlFilePicker({ setXmlForm, reset }: any) {
                 return;
             }
 
-            const apiUrl = "http://192.168.0.166:3000/product/create";
+            const apiUrl = url;
             const formData = new FormData();
             const file = xmlContent[0];
 
@@ -56,6 +55,9 @@ export default function XmlFilePicker({ setXmlForm, reset }: any) {
                     "Content-Type": "multipart/form-data",
                 },
             });
+
+            console.log(apiUrl)
+            console.log(data)
 
             Toast.success("Cadastrado feito com sucesso!");
             setXmlContent(null);

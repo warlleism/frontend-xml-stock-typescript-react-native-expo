@@ -4,11 +4,11 @@ export type ButtomSubmitProps = {
     handleSubmit: UseFormHandleSubmit<{
         name: string;
         price: number;
-        category: string;
+        category: number;
         description: string;
         quantity: number;
         dosage: string;
         laboratory: string;
-        requiresPrescription: string;
+        requiresPrescription: boolean;
     }, undefined>;
 }
