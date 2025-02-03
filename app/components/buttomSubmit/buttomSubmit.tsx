@@ -4,8 +4,9 @@ import { Text, TouchableOpacity } from "react-native";
 export default function ButtomSubmit({ handleSubmit, url }: any) {
 
     async function Submit(data: any) {
-        const response = await axios.post(url, data)
-        console.log(response.data)
+        console.log(data)
+        // const response = await axios.post(url, data)
+        // console.log(response.data)
     }
 
     return (

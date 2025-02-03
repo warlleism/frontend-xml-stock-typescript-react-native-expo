@@ -81,10 +81,8 @@ export default function XmlFilePicker({ setXmlForm, reset, url }: any) {
                 <View className='w-full mb-3 flex-row items-center justify-between '>
                     <View />
                     <TouchableOpacity
-                        className='flex-row items-center gap-2'
                         onPress={() => resetFilds()}>
                         <Text>Remover</Text>
-                        <Entypo name="trash" size={20} color="red" />
                     </TouchableOpacity>
                 </View>
             )}
