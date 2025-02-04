@@ -1,4 +1,4 @@
-import { Dimensions, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Dimensions, ScrollView, Text, TouchableOpacity, View, Animated } from "react-native";
 import FormularioScreen from "../components/forms/stock_form";
 import BackButton from "../components/backButton/backButton";
 import { useState, useRef } from "react";
@@ -11,10 +11,17 @@ export default function Formularios() {
 
     const [selectedTab, setSelectedTab] = useState(0);
     const scrollViewRef = useRef<ScrollView | null>(null);
+    const slideAnimation = useRef(new Animated.Value(0)).current;
 
     const handleTabPress = (index: number) => {
         setSelectedTab(index);
         scrollViewRef.current?.scrollTo({ x: index * width, animated: true });
+        Animated.spring(slideAnimation, {
+            toValue: index * (width * 0.3),
+            useNativeDriver: true,
+            speed: 15,
+            bounciness: 0,
+        }).start();
     };
 
     return (
@@ -26,22 +33,30 @@ export default function Formularios() {
                 duration={2000}
             />
             <BackButton />
-            <View className="w-full flex-row gap-2 items-center p-4">
-                <TouchableOpacity
-                    className={`rounded-xl p-2 ${selectedTab === 0 ? 'bg-[#2196f3]' : 'bg-[#e8f1f5]'}`}
-                    onPress={() => handleTabPress(0)}>
-                    <Text className={`${selectedTab === 0 ? 'text-white' : 'text-[#000]'}`}>Estoque</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    className={`rounded-xl p-2 ${selectedTab === 1 ? 'bg-[#2196f3]' : 'bg-[#e8f1f5]'}`}
-                    onPress={() => handleTabPress(1)}>
-                    <Text className={`${selectedTab === 1 ? 'text-white' : 'text-[#000]'}`}>Categoria</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    className={`rounded-xl p-2 ${selectedTab === 2 ? 'bg-[#2196f3]' : 'bg-[#e8f1f5]'}`}
-                    onPress={() => handleTabPress(2)}>
-                    <Text className={`${selectedTab === 2 ? 'text-white' : 'text-[#000]'}`}>Principios Ativos</Text>
-                </TouchableOpacity>
+            <View className="w-full flex-row justify-center items-center mb-10">
+                <View className="relative w-[90%]">
+                    <View className="flex-row">
+                        <TouchableOpacity
+                            className="w-[33%] justify-center items-center py-2"
+                            onPress={() => handleTabPress(0)}>
+                            <Text className={`text-sm ${selectedTab === 0 ? 'text-[#00A995]' : 'text-[#94a3b8]'}`}>Estoque</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            className="w-[33%] justify-center items-center py-2"
+                            onPress={() => handleTabPress(1)}>
+                            <Text className={`text-sm ${selectedTab === 1 ? 'text-[#00A995]' : 'text-[#94a3b8]'}`}>Categoria</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            className="w-[33%] justify-center items-center py-2"
+                            onPress={() => handleTabPress(2)}>
+                            <Text className={`text-sm ${selectedTab === 2 ? 'text-[#00A995]' : 'text-[#94a3b8]'}`}>Principios Ativos</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <Animated.View
+                        className="absolute bottom-0 h-[1px] w-[33%] bg-[#00A995]"
+                        style={{ transform: [{ translateX: slideAnimation }] }}
+                    />
+                </View>
             </View>
             <ScrollView
                 ref={scrollViewRef}
@@ -54,6 +69,12 @@ export default function Formularios() {
                     const offset = e.nativeEvent.contentOffset.x;
                     const index = Math.round(offset / width);
                     setSelectedTab(index);
+                    Animated.spring(slideAnimation, {
+                        toValue: index * (width * 0.3),
+                        useNativeDriver: true,
+                        speed: 15,
+                        bounciness: 0,
+                    }).start();
                 }}>
                 <FormularioScreen />
                 <CategoryFormScreen />

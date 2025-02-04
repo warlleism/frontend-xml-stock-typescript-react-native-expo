@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity, Text } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
-import AntDesign from '@expo/vector-icons/AntDesign';
 import { Toast } from 'toastify-react-native';
 import axios from 'axios';
-import Entypo from '@expo/vector-icons/Entypo';
 import { ActivityIndicator } from '@react-native-material/core';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import Entypo from '@expo/vector-icons/Entypo';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 export default function XmlFilePicker({ setXmlForm, reset, url }: any) {
 
@@ -77,22 +78,26 @@ export default function XmlFilePicker({ setXmlForm, reset, url }: any) {
 
     return (
         <View>
-            {xmlContent && (
-                <View className='w-full mb-3 flex-row items-center justify-between '>
-                    <View />
-                    <TouchableOpacity
-                        onPress={() => resetFilds()}>
-                        <Text>Remover</Text>
-                    </TouchableOpacity>
-                </View>
-            )}
             <TouchableOpacity
-                style={{ backgroundColor: '#fff', borderColor: "#2196f3" }}
+                style={{ backgroundColor: '#fff', borderColor: "#00A995" }}
                 className={`w-[100%] h-[120px] border rounded-sm py-6 p-2  justify-center items-center gap-1 border-dashed`}
                 onPress={handleFilePick}>
-                <AntDesign className={`${isPending ? 'hidden' : 'flex'}`} name={xmlContent ? "filetext1" : "upload"} size={20} color={"#2196f3"} />
+                <MaterialCommunityIcons className={`relative ${isPending ? 'hidden' : 'flex'}`} name={xmlContent ? "file-document-multiple-outline" : "upload"} size={20} color={"#00A995"} />
+                {
+                    xmlContent && (
+                        <View className='absolute top-3 right-3'>
+                            <View />
+                            <TouchableOpacity
+                                className='rounded-full h-[40px] w-[40px] bg-[#F7F7F7] justify-center items-center'
+                                onPress={() => resetFilds()}>
+                                <Entypo name="trash" size={20} color="#FF0033" />
+                            </TouchableOpacity>
+                        </View>
+                    )
+                }
+
                 {isPending ?
-                    <ActivityIndicator color="#737373" /> :
+                    <ActivityIndicator color="#00A995" /> :
                     file ?
                         <View className="flex-col items-center">
                             <Text style={{ color: '#4a4a4a', fontWeight: "600" }}>{file.name}</Text>
@@ -106,7 +111,8 @@ export default function XmlFilePicker({ setXmlForm, reset, url }: any) {
                 }
             </TouchableOpacity>
 
-            <TouchableOpacity className={`${xmlContent ? 'flex' : 'hidden'} mb-1 mt-4 w-full bg-[#2196f3] rounded-sm py-6`} onPress={sendFile}>
+            <TouchableOpacity className={`${xmlContent ? 'flex' : 'hidden'} mb-1 mt-4 w-full bg-[#00A995] rounded-sm py-6 flex-row gap-2 justify-center items-center`} onPress={sendFile}>
+                <Ionicons name="send-sharp" size={24} color="white" />
                 <Text className="text-white text-center text-xl">Enviar (.xml)</Text>
             </TouchableOpacity>
         </View>

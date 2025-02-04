@@ -12,7 +12,7 @@ export default function TabBar({ state, descriptors, navigation }: any) {
         'settings': (props: any) => <AntDesign name="setting" size={25} color="#fff" {...props} />,
     };
 
-    const primaryColor = '#2196f3';
+    const primaryColor = '#00A995';
     const secondaryColor = '#737373';
 
     return (

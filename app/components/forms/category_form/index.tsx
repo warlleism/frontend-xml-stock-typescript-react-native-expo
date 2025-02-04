@@ -6,8 +6,10 @@ import XmlFilePicker from "../../fileInput/fileInput";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
-import FormContainer from "../../formContainer/formContainer";
-import { useState } from "react";
+import InputTextContainer from "../../inputText/inputText";
+import { useEffect, useState } from "react";
+import InputTextareaContainer from "../../inputTextArea/inputTextArea";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 const { width, height } = Dimensions.get('window');
 
 const createUserFormSchema = z.object({
@@ -21,7 +23,11 @@ export default function CategoryFormScreen() {
 
     const [xmlForm, setXmlForm] = useState<boolean>(false);
 
-    const { register, setValue, handleSubmit, control, reset,
+    useEffect(() => {
+        reset()
+    }, [xmlForm])
+
+    const { register, handleSubmit, control, reset,
         formState: { errors } } = useForm<createUserFormData>({
             resolver: zodResolver(createUserFormSchema),
             defaultValues: {
@@ -36,72 +42,8 @@ export default function CategoryFormScreen() {
             style={{ width: width, height: height - 200 }}
         >
             <View style={{ height: height - 60 }}>
-                <View className="mb-1">
-                    <FormContainer xmlForm={xmlForm}>
-                        <View className="w-full h-full flex-row overflow-hidden">
-                            <View className="w-[15%] h-full bg-[#2196f3] flex-row justify-center items-center border-r-[.9px]  border-[#8298ab]">
-                                <AntDesign name="user" size={24} color="white" />
-                            </View>
-                            <View className="w-[85%] h-[100%]">
-                                <Controller
-                                    control={control}
-                                    name="name"
-                                    rules={{ required: true }}
-                                    render={({ field: { onChange, onBlur, value } }) => (
-                                        <TextInput
-                                            {...register("name")}
-                                            placeholder="Nome da categoria"
-                                            placeholderTextColor={"#d1d1d1"}
-                                            style={{ height: "100%" }}
-                                            className=" w-full "
-                                            onBlur={onBlur}
-                                            onChangeText={value => onChange(value)}
-                                            value={value}
-                                        />
-                                    )}
-                                />
-                            </View>
-                        </View>
-                    </FormContainer>
-                    <Text
-                        style={{ opacity: errors.name && xmlForm == false ? 1 : 0 }}
-                        className="text-[#616161] text-[10px]">
-                        {errors.name?.message !== "Required" ? errors.name?.message : "Preencha o nome do produto"}
-                    </Text>
-                </View>
-                <View className="mb-1">
-                    <FormContainer xmlForm={xmlForm}>
-                        <View className="w-full h-full flex-row overflow-hidden">
-                            <View className="w-[15%] h-full bg-[#2196f3] flex-row justify-center items-center border-r-[.9px]  border-[#8298ab]">
-                                <AntDesign name="user" size={24} color="white" />
-                            </View>
-                            <View className="w-[85%] h-[100%]">
-                                <Controller
-                                    control={control}
-                                    name="description"
-                                    rules={{ required: true }}
-                                    render={({ field: { onChange, onBlur, value } }) => (
-                                        <TextInput
-                                            {...register("description")}
-                                            placeholder="Descrição da categoria"
-                                            placeholderTextColor={"#d1d1d1"}
-                                            style={{ height: "100%" }}
-                                            className=" w-full "
-                                            onBlur={onBlur}
-                                            onChangeText={value => onChange(value)}
-                                            value={value}
-                                        />
-                                    )}
-                                />
-                            </View>
-                        </View>
-                    </FormContainer>
-                    <Text
-                        style={{ opacity: errors.name && xmlForm == false ? 1 : 0 }}
-                        className="text-[#616161] text-[10px]">
-                        {errors.description?.message !== "Required" ? errors.description?.message : "Preencha o nome do produto"}
-                    </Text>
-                </View>
+                <InputTextContainer xmlForm={xmlForm} errors={errors.name} control={control} register={register} type="text" name="name" icon={<MaterialIcons name="drive-file-rename-outline" size={24} color="#00A995" />} placeholder="Nome da categoria" />
+                <InputTextareaContainer xmlForm={xmlForm} errors={errors.description} control={control} register={register} name="description" icon={<MaterialIcons name="description" size={24} color="#00A995" />} placeholder="Descrição da categoria" />
             </View>
             <View
                 className="w-full absolute bottom-0 self-center">
