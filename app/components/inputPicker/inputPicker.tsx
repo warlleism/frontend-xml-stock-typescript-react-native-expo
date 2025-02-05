@@ -1,7 +1,8 @@
-import { Dimensions, FlatList, Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Dimensions, FlatList, Modal, Text, TextInput, TouchableOpacity, View } from "react-native";
 import AntDesign from '@expo/vector-icons/AntDesign';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller } from "react-hook-form";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const { width, height } = Dimensions.get('window');
 
@@ -14,13 +15,19 @@ interface InputPickerProps {
     icon?: any;
     placeholder: string;
     options: Array<{ label: string; value: any }>;
+    watch: any;
 }
 
-export default function InputPickerContainer({ xmlForm, errors, control, register, name, icon, placeholder, options }: InputPickerProps) {
+export default function InputPickerContainer({ xmlForm, errors, control, register, name, icon, placeholder, options, watch }: InputPickerProps) {
 
     const [modal, setModal] = useState<boolean>(false);
+    const [selected, setSelected] = useState<string | null>(null);
     const [optionsList, setOptionsList] = useState([] as any);
-    const [selected, setSelected] = useState<any>(null);
+    const value = watch(name);
+
+    useEffect(() => {
+        if (value === 0) setSelected(null)
+    }, [value])
 
     const handleModal = () => {
         setModal(!modal);
@@ -40,13 +47,14 @@ export default function InputPickerContainer({ xmlForm, errors, control, registe
 
     return (
         <>
-            <Modal
-                transparent={true}
-                visible={modal}
-                onRequestClose={handleModal}
-            >
-                <View style={{ width, height }} className="absolute top-0 left-0 bg-[#00000033] bg-opacity-50 flex justify-center items-center z-50">
-                    <View className="w-[90%] h-[80%] bg-white rounded-xl p-4">
+            <Modal transparent={true} visible={modal} onRequestClose={handleModal}>
+                <View
+                    onTouchStart={handleModal}
+                    style={{ width, height }}
+                    className="absolute top-0 left-0 bg-[#00000033] bg-opacity-50 flex justify-center items-center z-40" />
+
+                <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={{ width: width * 0.9, height: height * 0.7 }} className=" bg-white rounded-xl p-4 z-50">
                         <View className="flex flex-row justify-between items-center border-b-[.6px] border-[#0e0e0e3b] w-full h-[50px]">
                             <View className="h-full w-[90%]">
                                 <TextInput
@@ -74,9 +82,13 @@ export default function InputPickerContainer({ xmlForm, errors, control, registe
                                                 onChange(item.value);
                                                 handleSelect(item);
                                             }}
-                                            className="w-full h-[50px] flex-row items-center px-3 border-b-[.6px] border-[#0e0e0e3b] my-2"
+                                            className="w-full h-[50px] flex-row justify-between items-center gap-2 px-3 border-b-[.6px] border-[#0e0e0e3b] my-2"
                                         >
-                                            <Text className="text-[#000000] text-[15px] font-light">{item.label}</Text>
+                                            <View className="flex-row justify-center items-center gap-2">
+                                                <AntDesign name="right" size={18} color="#8c8c8c" />
+                                                <Text className="text-[#000000] text-[13px] font-light">{item.label}</Text>
+                                            </View>
+                                            <MaterialIcons name="touch-app" size={20} color="#00A995" />
                                         </TouchableOpacity>
 
                                     )}
@@ -97,8 +109,8 @@ export default function InputPickerContainer({ xmlForm, errors, control, registe
                         {icon}
                     </View>
                     <View className="w-[85%] h-full flex-row justify-between items-center px-3">
-                        {selected ? <Text className="text-[16px] font-normal text-black">{selected}</Text> : <Text className="text-[#94a3b8]">{placeholder} </Text>}
-                        <AntDesign name="caretdown" size={15} color="#00A995" />
+                        {selected ? <Text className="text-[15px] font-light text-black">{selected}</Text> : <Text className="text-[#94a3b8] text-[15px] font-light">{placeholder} </Text>}
+                        <AntDesign name="caretdown" size={10} color="#00A995" />
                     </View>
                 </TouchableOpacity>
                 {errors && !xmlForm && (

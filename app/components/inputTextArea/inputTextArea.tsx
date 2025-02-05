@@ -22,7 +22,7 @@ export default function InputTextareaContainer({ xmlForm, errors, control, regis
                             placeholderTextColor={"#94a3b8"}
                             multiline
                             numberOfLines={100}
-                            className="w-[85%] h-[100%] px-3 pt-3 text-[16px] font-normal text-black"
+                            className="w-[85%] h-[100%] px-3 pt-3 text-[15px] font-light text-black"
                             onBlur={onBlur}
                             onChangeText={value => onChange(value)}
                             value={value}

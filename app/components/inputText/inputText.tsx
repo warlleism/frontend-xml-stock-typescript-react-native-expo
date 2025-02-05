@@ -26,7 +26,7 @@ export default function InputTextContainer({ xmlForm, errors, control, register,
                                         placeholder={placeholder}
                                         placeholderTextColor={"#94a3b8"}
                                         keyboardType={type === "number" ? "numeric" : "default"}
-                                        className="w-full bg-white text-[16px] font-normal text-black"
+                                        className="w-full bg-white text-[15px] font-light text-black"
                                         onBlur={onBlur}
                                         onChangeText={(text) => {
                                             if (type === "number") {

@@ -46,7 +46,7 @@ export default function ActiveFormScreen() {
             <View
                 className="w-full absolute bottom-0 self-center">
                 <XmlFilePicker setXmlForm={setXmlForm} reset={reset} url="http://192.168.0.166:3000/active/create" />
-                {!xmlForm && <ButtomSubmit handleSubmit={handleSubmit} url="http://192.168.0.166:3000/active/create" />}
+                {!xmlForm && <ButtomSubmit handleSubmit={handleSubmit} reset={reset} url="http://192.168.0.166:3000/active/create" />}
             </View>
         </SafeAreaView >
     );

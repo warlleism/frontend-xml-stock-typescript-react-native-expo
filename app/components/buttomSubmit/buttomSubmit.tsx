@@ -1,13 +1,18 @@
 import axios from "axios";
 import { Text, TouchableOpacity } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { Toast } from "toastify-react-native";
 
-export default function ButtomSubmit({ handleSubmit, url }: any) {
+export default function ButtomSubmit({ handleSubmit, url, reset }: any) {
 
     async function Submit(data: any) {
-        console.log(data)
-        // const response = await axios.post(url, data)
-        // console.log(response.data)
+        const response = await axios.post(url, data)
+        if (response.status == 201) {
+            Toast.success("Cadastrado feito com sucesso!");
+            reset();
+        } else {
+            Toast.error("Erro ao cadastrar!");
+        }
     }
 
     return (
