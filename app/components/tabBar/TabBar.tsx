@@ -7,7 +7,7 @@ type IconKey = 'index' | 'formulario' | 'settings';
 export default function TabBar({ state, descriptors, navigation }: any) {
 
     const icons = {
-        'index': (props: any) => <Entypo name="list" size={25} color="#fff" {...props} />,
+        'index': (props: any) => <Entypo name="home" size={25} color="#fff" {...props} />,
         'formulario': (props: any) => <AntDesign name="form" size={25} color="#fff" {...props} />,
         'settings': (props: any) => <AntDesign name="setting" size={25} color="#fff" {...props} />,
     };

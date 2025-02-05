@@ -1,4 +1,4 @@
-export default function SettingsScreen() {
+export default function Settings() {
     return (
         <>
         </>
