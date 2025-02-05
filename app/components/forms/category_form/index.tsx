@@ -43,8 +43,8 @@ export default function CategoryFormScreen() {
             </View>
             <View
                 className="w-full absolute bottom-0 self-center">
-                <XmlFilePicker setXmlForm={setXmlForm} reset={reset} url="http://192.168.0.166:3000/category/create" />
-                {!xmlForm && <ButtomSubmit handleSubmit={handleSubmit} reset={reset} url="http://192.168.0.166:3000/category/create" />}
+                <XmlFilePicker setXmlForm={setXmlForm} reset={reset} url="http://192.168.0.167:3000/category/create" />
+                {!xmlForm && <ButtomSubmit handleSubmit={handleSubmit} reset={reset} url="http://192.168.0.167:3000/category/create" />}
             </View>
         </SafeAreaView >
     );

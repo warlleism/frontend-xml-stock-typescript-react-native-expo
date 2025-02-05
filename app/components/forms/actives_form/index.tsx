@@ -45,8 +45,8 @@ export default function ActiveFormScreen() {
             <InputTextareaContainer xmlForm={xmlForm} errors={errors.bula} control={control} register={register} name="bula" icon={<MaterialIcons name="description" size={24} color="#00A995" />} placeholder="Bula do princípio ativo" />
             <View
                 className="w-full absolute bottom-0 self-center">
-                <XmlFilePicker setXmlForm={setXmlForm} reset={reset} url="http://192.168.0.166:3000/active/create" />
-                {!xmlForm && <ButtomSubmit handleSubmit={handleSubmit} reset={reset} url="http://192.168.0.166:3000/active/create" />}
+                <XmlFilePicker setXmlForm={setXmlForm} reset={reset} url="http://192.168.0.167:3000/active/create" />
+                {!xmlForm && <ButtomSubmit handleSubmit={handleSubmit} reset={reset} url="http://192.168.0.167:3000/active/create" />}
             </View>
         </SafeAreaView >
     );

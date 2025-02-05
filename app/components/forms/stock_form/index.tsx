@@ -35,10 +35,10 @@ type createUserFormData = z.infer<typeof createUserFormSchema>
 
 export default function FormularioScreen() {
 
-    const [xmlForm, setXmlForm] = useState<boolean>(false);
     const { data: categoryes } = useGetCategory()
-    const { data: activePrinciples } = useGetActivePrinciples()
     const [refreshing, setRefreshing] = useState(false);
+    const [xmlForm, setXmlForm] = useState<boolean>(false);
+    const { data: activePrinciples } = useGetActivePrinciples()
 
     const onRefresh = () => {
         setRefreshing(true);
@@ -53,79 +53,28 @@ export default function FormularioScreen() {
         formState: { errors } } =
         useForm<createUserFormData>({
             resolver: zodResolver(createUserFormSchema),
-            defaultValues: {
-                name: "",
-                price: 0,
-                categoryid: 0,
-                description: "",
-                dosage: "",
-                quantity: 0,
-                laboratory: "",
-                principleactiveid: 0,
-                requiresPrescription: "",
-            },
+            defaultValues: { name: "", price: 0, categoryid: 0, description: "", dosage: "", quantity: 0, laboratory: "", principleactiveid: 0, requiresPrescription: "" },
         });
 
     return (
-        <SafeAreaView
-            style={{ flex: 1, width: width }}
-            className="flex-1 w-full bg-[#fff]">
+        <SafeAreaView style={{ flex: 1, width: width }} className="flex-1 w-full bg-[#fff]">
             <ScrollView
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                        colors={["#00A995"]}
-                        tintColor="#00A995"
-                    />
-                }
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#00A995"]} tintColor="#00A995" />}
                 className="px-5">
                 <InputTextContainer xmlForm={xmlForm} errors={errors.name} control={control} register={register} type="text" name="name" icon={<MaterialIcons name="drive-file-rename-outline" size={24} color="#00A995" />} placeholder="Nome do produto" />
                 <InputTextContainer xmlForm={xmlForm} errors={errors.quantity} control={control} register={register} type="number" name="quantity" icon={<FontAwesome6 name="truck-ramp-box" size={17} color="#00A995" />} placeholder="Quantidade" />
                 <InputTextContainer xmlForm={xmlForm} errors={errors.price} control={control} register={register} type="number" name="price" icon={<MaterialIcons name="attach-money" size={24} color="#00A995" />} placeholder="Preço" />
-                <InputPickerContainer
-                    watch={watch}
-                    xmlForm={xmlForm}
-                    errors={errors.categoryid}
-                    control={control}
-                    register={register}
-                    name="categoryid"
-                    icon={<MaterialCommunityIcons name="medical-bag" size={24} color="#00A995" />}
-                    placeholder="Categoria"
-                    options={categoryes?.map((item: any) => ({ label: item.name, value: item.id })) || []}
-                />
-                <InputPickerContainer
-                    watch={watch}
-                    xmlForm={xmlForm}
-                    errors={errors.principleactiveid}
-                    control={control}
-                    register={register}
-                    name="principleactiveid"
-                    icon={<MaterialCommunityIcons name="medical-bag" size={24} color="#00A995" />}
-                    placeholder="Principio ativo"
-                    options={activePrinciples?.map((item: any) => ({ label: item.name, value: item.id })) || []}
-                />
+                <InputPickerContainer watch={watch} xmlForm={xmlForm} errors={errors.categoryid} control={control} register={register} name="categoryid" icon={<MaterialCommunityIcons name="medical-bag" size={24} color="#00A995" />} placeholder="Categoria" options={categoryes?.map((item: any) => ({ label: item.name, value: item.id })) || []} />
+                <InputPickerContainer watch={watch} xmlForm={xmlForm} errors={errors.principleactiveid} control={control} register={register} name="principleactiveid" icon={<MaterialCommunityIcons name="medical-bag" size={24} color="#00A995" />} placeholder="Principio ativo" options={activePrinciples?.map((item: any) => ({ label: item.name, value: item.id })) || []} />
                 <InputTextContainer xmlForm={xmlForm} errors={errors.dosage} control={control} register={register} type="text" name="dosage" icon={<Fontisto name="injection-syringe" size={24} color="#00A995" />} placeholder="Dosagem" />
                 <InputTextContainer xmlForm={xmlForm} errors={errors.laboratory} control={control} register={register} type="text" name="laboratory" icon={<Entypo name="documents" size={25} color="#00A995" />} placeholder="Laboratório" />
-                <InputPickerContainer
-                    watch={watch}
-                    xmlForm={xmlForm}
-                    errors={errors.requiresPrescription}
-                    control={control}
-                    register={register}
-                    name="requiresPrescription"
-                    icon={<MaterialCommunityIcons name="medical-bag" size={24} color="#00A995" />}
-                    placeholder="Necessidade de Prescrição"
-                    options={[
-                        { label: "Sim", value: "true" },
-                        { label: "Não", value: "false" }
-                    ]} />
+                <InputPickerContainer watch={watch} xmlForm={xmlForm} errors={errors.requiresPrescription} control={control} register={register} name="requiresPrescription" icon={<MaterialCommunityIcons name="medical-bag" size={24} color="#00A995" />} placeholder="Necessidade de Prescrição" options={[{ label: "Sim", value: "true" }, { label: "Não", value: "false" }]} />
                 <InputTextareaContainer xmlForm={xmlForm} errors={errors.description} control={control} register={register} name="description" icon={<MaterialIcons name="description" size={24} color="#00A995" />} placeholder="Descrição do produto" />
                 <View
                     style={{ marginBottom: height / 9 }}
                     className="mt-4 w-full">
-                    <XmlFilePicker setXmlForm={setXmlForm} reset={reset} url="http://192.168.0.166:3000/product/create" />
-                    {!xmlForm && <ButtomSubmit handleSubmit={handleSubmit} reset={reset} url="http://192.168.0.166:3000/product/create" />}
+                    <XmlFilePicker setXmlForm={setXmlForm} reset={reset} url="http://192.168.0.167:3000/product/create" />
+                    {!xmlForm && <ButtomSubmit handleSubmit={handleSubmit} reset={reset} url="http://192.168.0.167:3000/product/create" />}
                 </View>
             </ScrollView>
         </SafeAreaView >
