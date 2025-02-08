@@ -16,12 +16,6 @@ export default function Formularios() {
     const handleTabPress = (index: number) => {
         setSelectedTab(index);
         scrollViewRef.current?.scrollTo({ x: index * width, animated: true });
-        Animated.spring(slideAnimation, {
-            toValue: index * (width * 0.3),
-            useNativeDriver: true,
-            speed: 15,
-            bounciness: 0,
-        }).start();
     };
 
     return (

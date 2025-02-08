@@ -1,9 +1,9 @@
 import { Controller } from "react-hook-form";
-import { Text, View, TextInput } from "react-native";
+import { Text, View, TextInput, TouchableOpacity } from "react-native";
 
-export default function InputTextareaContainer({ xmlForm, errors, control, register, name, icon, placeholder }: { xmlForm: boolean, errors: any, control: any, register: any, name: string, icon?: any, placeholder: string }) {
+export default function InputTextareaContainer({ xmlForm, errors, control, register, name, icon, placeholder }: { xmlForm?: boolean, errors: any, control: any, register: any, name: string, icon?: any, placeholder: string }) {
     return (
-        <View className="mb-1"
+        <View className={`mb-5}`}
             style={{ opacity: xmlForm ? 0.2 : 1 }}
             pointerEvents={xmlForm ? "none" : "auto"}
         >

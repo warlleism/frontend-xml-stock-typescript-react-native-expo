@@ -1,16 +1,27 @@
-import React, { useState } from 'react';
-import { Dimensions, FlatList, Modal, Pressable, ScrollView, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native';
-import { ActivityIndicator, DataTable, IconButton } from 'react-native-paper';
+import React, { useRef, useState } from 'react';
+import { Dimensions, FlatList, Modal, Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, DataTable } from 'react-native-paper';
 import useGetProducts, { Product } from '../hooks/useGetProducts';
 import Feather from '@expo/vector-icons/Feather';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { Modalize } from 'react-native-modalize';
+import ModalizeEdit from '../components/modalizeEdit/modalizeEdit';
+import DeleteButton from '../components/deleteButton/deleteButton';
 
 const { width, height } = Dimensions.get('window');
 
 export default function Home() {
+
     const { data, page, setPage, loading, setLoading } = useGetProducts();
     const [modal, setModal] = useState<boolean>(false);
+    const [deleteModal, setDeleteModal] = useState<boolean>(false)
     const [item, setItem] = useState<Product | null>(null);
+    const modalizeRef = useRef<Modalize>(null);
+
+    const onOpen = (item: Product) => {
+        setItem(item)
+        modalizeRef.current?.open();
+    };
 
     const handlePageChange = (newPage: number) => {
         setLoading(true);
@@ -23,30 +34,24 @@ export default function Home() {
     }
 
     return (
-        <>
-
-            {loading && (
-                <View className="absolute h-full w-full flex-1 justify-center items-center bg-[#00000052]  z-50">
-                    <ActivityIndicator size="large" color="#00A995" />
-                </View>
-            )}
-
+        <View
+            style={{ height: "100%", width: width, display: 'flex' }}
+        >
+            {loading && (<View className="absolute h-full w-full flex-1 justify-center items-center bg-[#00000052]  z-50"><ActivityIndicator size="large" color="#00A995" /></View>)}
+            <ModalizeEdit item={item} modalizeRef={modalizeRef} />
             <Modal
                 animationType="fade"
                 transparent={true}
                 visible={modal}
                 onRequestClose={() => setModal(!modal)}>
-
                 <Pressable onPress={() => setModal(!modal)} className="absolute w-full h-full bg-[#00000033] z-40" />
-
-                <View style={{ top: height / 8 }} className="self-center w-[90vw] bg-white rounded-xl overflow-hidden p-5 gap-3 z-50">
+                <View style={{ top: height / 8 }} className="self-center w-[90vw] bg-white rounded-xl overflow-hidden p-5 gap-5 z-50">
                     <View className="flex-row justify-center items-center relative">
                         <View className="absolute top-9 left-0 w-full h-[2px] bg-[#00A995]" />
                         <Text className="text-[19px] font-bold text-center">{item?.name}</Text>
                     </View>
                     <View className="mt-5 p-4 bg-gray-100 rounded-lg shadow-md gap-2">
                         <Text className="text-xl font-semibold mb-2">Detalhes do Produto</Text>
-                        <Text className="text-lg font-bold">ID: <Text className="font-normal">{item?.id}</Text></Text>
                         <Text className="text-lg font-bold">Nome: <Text className="font-normal">{item?.name}</Text></Text>
                         <Text className="text-lg font-bold">Categoria ID: <Text className="font-normal">{item?.categoryid}</Text></Text>
                         <Text className="text-lg font-bold">Preço: <Text className="font-normal">R${item?.price?.toFixed(2)}</Text></Text>
@@ -64,62 +69,89 @@ export default function Home() {
                     </TouchableOpacity>
                 </View>
             </Modal>
+            <Modal
+                animationType="fade"
+                transparent={true}
+                visible={deleteModal}
+                onRequestClose={() => setDeleteModal(!deleteModal)}>
+                <Pressable onPress={() => setDeleteModal(!deleteModal)} className="absolute w-full h-full bg-[#00000033] z-40" />
+                <View style={{ top: height / 3 }} className="self-center w-[90vw] bg-white rounded-xl overflow-hidden p-5 gap-5 z-50">
+                    <Text className="text-[19px] font-bold text-start">Confirmar Exclusão</Text>
+                    <Text className="text-lg text-start">Você tem certeza que deseja excluir este item?</Text>
+                    <View className="flex-row justify-between mt-5">
+                        <DeleteButton setModal={setDeleteModal} url={"http://192.168.0.167:3000/product/get"} id={item?.id as number} />
+                        <TouchableOpacity
+                            className="w-[48%] items-center justify-center bg-[#00A995] h-12 rounded-full shadow-md"
+                            onPress={() => setDeleteModal(!deleteModal)}>
+                            <TouchableOpacity onPress={() => setModal(!modal)}>
+                                <Feather name="x" size={24} color="white" />
+                            </TouchableOpacity>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
+            <View style={{ width: width, height: "90%" }}>
+                <ScrollView
+                    horizontal
+                    contentContainerStyle={{ backgroundColor: "#fff" }}
+                    showsHorizontalScrollIndicator={false}>
+                    <DataTable>
+                        <DataTable.Header style={{ width: width * 3.5 }}>
+                            <DataTable.Title className='justify-center'>Ações</DataTable.Title>
+                            <DataTable.Title className='justify-center'>ID</DataTable.Title>
+                            <DataTable.Title className='justify-center'>Nome</DataTable.Title>
+                            <DataTable.Title className='justify-center'>Categoria</DataTable.Title>
+                            <DataTable.Title className='justify-center'>Descrição</DataTable.Title>
+                            <DataTable.Title className='justify-center'>Dosagem</DataTable.Title>
+                            <DataTable.Title className='justify-center'>Laboratório</DataTable.Title>
+                            <DataTable.Title className='justify-center'>Preço</DataTable.Title>
+                            <DataTable.Title className='justify-center'>Principio</DataTable.Title>
+                            <DataTable.Title className='justify-center'>Quantidade</DataTable.Title>
+                            <DataTable.Title className='justify-center'>Requer Prescrição</DataTable.Title>
+                            <DataTable.Title className='justify-center'>Cadastro</DataTable.Title>
+                        </DataTable.Header>
+                        <FlatList
+                            data={data?.data}
+                            renderItem={({ item }) => (
+                                <DataTable.Row
+                                    style={{ backgroundColor: item.id % 2 === 0 ? '#c6c6c612' : '#fff' }}>
+                                    <DataTable.Cell
+                                        className="justify-center align-center h-20">
+                                        <View className='flex-row justify-center items-center gap-3'>
+                                            <TouchableOpacity onPress={() => handleSelectItem(item)}><Feather name="eye" size={20} color="black" /></TouchableOpacity>
+                                            <TouchableOpacity onPress={() => onOpen(item)}><Feather name="edit" size={20} color="black" /></TouchableOpacity>
+                                            <TouchableOpacity onPress={() => {
+                                                setItem({ ...item, id: item.id })
+                                                setDeleteModal(!deleteModal)
+                                            }}><Feather name="trash-2" size={20} color="black" /></TouchableOpacity>
+                                        </View>
+                                    </DataTable.Cell>
+                                    <DataTable.Cell className="flex justify-center h-20">{item.id}</DataTable.Cell>
+                                    <DataTable.Cell className="flex justify-center h-20">{item.name}</DataTable.Cell>
+                                    <DataTable.Cell className="flex justify-center h-20">{item.categoryid}</DataTable.Cell>
+                                    <DataTable.Cell className="flex justify-center h-20">{item.description}</DataTable.Cell>
+                                    <DataTable.Cell className="flex justify-center h-20">{item.dosage}</DataTable.Cell>
+                                    <DataTable.Cell className="flex justify-center h-20">{item.laboratory}</DataTable.Cell>
+                                    <DataTable.Cell className="flex justify-center h-20">{item.price}</DataTable.Cell>
+                                    <DataTable.Cell className="flex justify-center h-20">{item.principleactiveid}</DataTable.Cell>
+                                    <DataTable.Cell className="flex justify-center h-20">{item.quantity}</DataTable.Cell>
+                                    <DataTable.Cell className="flex justify-center h-20">{String(item.requiresPrescription).toLowerCase() === 'true' ? 'Sim' : 'Não'}</DataTable.Cell>
+                                    <DataTable.Cell className="flex justify-center h-20">
+                                        {new Intl.DateTimeFormat('pt-BR').format(new Date(item.createdAt))}
+                                    </DataTable.Cell>
+                                </DataTable.Row>
+                            )}
+                            keyExtractor={(item) => item.id.toString()}
+                            showsVerticalScrollIndicator={false}
+                            style={{ width: width * 3.5 }}
+                        />
+                    </DataTable>
+                </ScrollView>
+            </View>
 
-            <ScrollView
-                horizontal
-                contentContainerStyle={{ backgroundColor: "#fff" }}
-                showsHorizontalScrollIndicator={false}>
-                <DataTable>
-                    <DataTable.Header style={{ width: width * 3.5 }}>
-                        <DataTable.Title className='justify-center'>Ações</DataTable.Title>
-                        <DataTable.Title className='justify-center'>ID</DataTable.Title>
-                        <DataTable.Title className='justify-center'>Nome</DataTable.Title>
-                        <DataTable.Title className='justify-center'>Categoria</DataTable.Title>
-                        <DataTable.Title className='justify-center'>Descrição</DataTable.Title>
-                        <DataTable.Title className='justify-center'>Dosagem</DataTable.Title>
-                        <DataTable.Title className='justify-center'>Laboratório</DataTable.Title>
-                        <DataTable.Title className='justify-center'>Preço</DataTable.Title>
-                        <DataTable.Title className='justify-center'>Principio</DataTable.Title>
-                        <DataTable.Title className='justify-center'>Quantidade</DataTable.Title>
-                        <DataTable.Title className='justify-center'>Requer Prescrição</DataTable.Title>
-                        <DataTable.Title className='justify-center'>Cadastro</DataTable.Title>
-                    </DataTable.Header>
-                    <FlatList
-                        data={data?.data}
-                        renderItem={({ item }) => (
-                            <DataTable.Row
-                                style={{ backgroundColor: item.id % 2 === 0 ? '#c6c6c612' : '#fff' }}>
-                                <DataTable.Cell style={{ justifyContent: 'center', height: 70, }}>
-                                    <View className='flex-row justify-center items-center gap-3'>
-                                        <TouchableOpacity onPress={() => handleSelectItem(item)}><Feather name="eye" size={20} color="black" /></TouchableOpacity>
-                                        <TouchableOpacity><Feather name="edit" size={20} color="black" /></TouchableOpacity>
-                                        <TouchableOpacity><Feather name="trash-2" size={20} color="black" /></TouchableOpacity>
-                                    </View>
-                                </DataTable.Cell>
-                                <DataTable.Cell className="flex justify-center h-16">{item.id}</DataTable.Cell>
-                                <DataTable.Cell className="flex justify-center h-16">{item.name}</DataTable.Cell>
-                                <DataTable.Cell className="flex justify-center h-16">{item.categoryid}</DataTable.Cell>
-                                <DataTable.Cell className="flex justify-center h-16">{item.description}</DataTable.Cell>
-                                <DataTable.Cell className="flex justify-center h-16">{item.dosage}</DataTable.Cell>
-                                <DataTable.Cell className="flex justify-center h-16">{item.laboratory}</DataTable.Cell>
-                                <DataTable.Cell className="flex justify-center h-16">{item.price}</DataTable.Cell>
-                                <DataTable.Cell className="flex justify-center h-16">{item.principleactiveid}</DataTable.Cell>
-                                <DataTable.Cell className="flex justify-center h-16">{item.quantity}</DataTable.Cell>
-                                <DataTable.Cell className="flex justify-center h-16">{String(item.requiresPrescription).toLowerCase() === 'true' ? 'Sim' : 'Não'}</DataTable.Cell>
-                                <DataTable.Cell className="flex justify-center h-16">
-                                    {new Intl.DateTimeFormat('pt-BR').format(new Date(item.createdAt))}
-                                </DataTable.Cell>
-                            </DataTable.Row>
-                        )}
-                        keyExtractor={(item) => item.id.toString()}
-                        showsVerticalScrollIndicator={false}
-                        style={{ width: width * 3.5, marginBottom: height / 5.2 }}
-                    />
-                </DataTable>
-
-            </ScrollView>
-
-            <View className="absolute bg-[#f2f2f2] bottom-[calc(100vh/12)] w-full h-20 flex-row items-center justify-between px-5">
+            <View
+                style={{ elevation: 5 }}
+                className="flex-row justify-between items-center bg-[#e8e8e8] h-[10%] px-5">
                 <TouchableOpacity onPress={() => handlePageChange(page - 1)} disabled={page === 1}
                     className='disabled:opacity-20' >
                     <AntDesign name="left" size={24} color="black" />
@@ -129,8 +161,7 @@ export default function Home() {
                     className='disabled:opacity-20' >
                     <AntDesign name="right" size={24} color="black" />
                 </TouchableOpacity>
-
             </View>
-        </>
+        </View>
     );
 }

@@ -1,9 +1,21 @@
 import { Controller } from "react-hook-form";
 import { Text, View, TextInput } from "react-native";
 
-export default function InputTextContainer({ xmlForm, errors, control, register, name, type, icon, placeholder }: { xmlForm: boolean, errors: any, control: any, register: any, name: string, type: string, icon?: any, placeholder: string }) {
+interface InputTextProps {
+    xmlForm?: boolean;
+    errors: any;
+    control: any;
+    register: any;
+    name: string;
+    icon?: any;
+    placeholder: string;
+    type: string;
+    watch?: any;
+}
+
+export default function InputTextContainer({ xmlForm, errors, control, register, name, type, icon, placeholder }: InputTextProps) {
     return (
-        <View className="w-full mb-4">
+        <View className={`mb-5 w-full`}>
             <View
                 className={`w-full h-[55px] flex flex-row justify-center items-center border-[1px] ${errors && !xmlForm ? 'border-red-500' : 'border-[#00A995]'} overflow-hidden rounded-xl bg-white shadow-sm`}
                 style={{ opacity: xmlForm ? 0.2 : 1 }}

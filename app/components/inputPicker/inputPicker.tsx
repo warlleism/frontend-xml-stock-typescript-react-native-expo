@@ -7,7 +7,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 const { width, height } = Dimensions.get('window');
 
 interface InputPickerProps {
-    xmlForm: boolean;
+    xmlForm?: boolean;
     errors: any;
     control: any;
     register: any;
@@ -24,6 +24,8 @@ export default function InputPickerContainer({ xmlForm, errors, control, registe
     const [selected, setSelected] = useState<string | null>(null);
     const [optionsList, setOptionsList] = useState([] as any);
     const value = watch(name);
+    const selectedOption = options.find(option => option.value === value);
+
 
     useEffect(() => {
         if (value === 0) setSelected(null)
@@ -100,7 +102,7 @@ export default function InputPickerContainer({ xmlForm, errors, control, registe
                 </View>
             </Modal>
 
-            <View className={`${xmlForm ? "mb-1" : "mb-4"}`}
+            <View className={`mb-5`}
                 style={{ opacity: xmlForm ? 0.2 : 1 }}
                 pointerEvents={xmlForm ? "none" : "auto"}
             >
@@ -109,8 +111,16 @@ export default function InputPickerContainer({ xmlForm, errors, control, registe
                         {icon}
                     </View>
                     <View className="w-[85%] h-full flex-row justify-between items-center px-3">
-                        {selected ? <Text className="text-[15px] font-light text-black">{selected}</Text> : <Text className="text-[#94a3b8] text-[15px] font-light">{placeholder} </Text>}
-                        <AntDesign name="caretdown" size={10} color="#00A995" />
+                        <View className="w-[100%] h-full flex-row justify-between items-center px-3">
+                            {selected ? (
+                                <Text className="text-[15px] font-light text-black">{selected}</Text>
+                            ) : selectedOption ? (
+                                <Text className="text-[15px] font-light text-black">{selectedOption.label}</Text>
+                            ) : (
+                                <Text className="text-[#94a3b8] text-[15px] font-light">{placeholder}</Text>
+                            )}
+                            <AntDesign name="caretdown" size={10} color="#00A995" />
+                        </View>
                     </View>
                 </TouchableOpacity>
                 {errors && !xmlForm && (

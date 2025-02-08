@@ -16,7 +16,7 @@ export default function TabBar({ state, descriptors, navigation }: any) {
     const secondaryColor = '#737373';
 
     return (
-        <View className='absolute bottom-0 h-[70px] w-full flex-row justify-between items-center bg-[#f5f5f5]'>
+        <View className='h-[70px] w-full flex-row justify-between items-center bg-[#f5f5f5]'>
             {state.routes.map((route: any, index: number) => {
 
                 const { options } = descriptors[route.key];

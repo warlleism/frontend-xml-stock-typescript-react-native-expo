@@ -6,13 +6,14 @@ import { Toast } from "toastify-react-native";
 export default function ButtomSubmit({ handleSubmit, url, reset }: any) {
 
     async function Submit(data: any) {
-        const response = await axios.post(url, data)
-        if (response.status == 201) {
-            Toast.success("Cadastrado feito com sucesso!");
-            reset();
-        } else {
-            Toast.error("Erro ao cadastrar!");
-        }
+        console.log(data);
+        // const response = await axios.post(url, data)
+        // if (response.status == 201) {
+        //     Toast.success("Cadastrado feito com sucesso!");
+        //     reset();
+        // } else {
+        //     Toast.error("Erro ao cadastrar!");
+        // }
     }
 
     return (
