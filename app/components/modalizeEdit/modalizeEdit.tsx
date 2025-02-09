@@ -75,7 +75,7 @@ export default function ModalizeEdit({ item, modalizeRef }: any) {
             }}
             handleStyle={{
                 position: "absolute",
-                top: 19,
+                top: 25,
                 elevation: 1,
                 width: "20%",
                 backgroundColor: "#00A995"

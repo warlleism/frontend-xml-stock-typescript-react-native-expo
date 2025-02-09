@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Dimensions, FlatList, Modal, Pressable, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, FlatList, Modal, Pressable, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { ActivityIndicator, DataTable } from 'react-native-paper';
 import useGetProducts, { Product } from '../hooks/useGetProducts';
 import Feather from '@expo/vector-icons/Feather';
@@ -7,12 +7,14 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import { Modalize } from 'react-native-modalize';
 import ModalizeEdit from '../components/modalizeEdit/modalizeEdit';
 import DeleteButton from '../components/deleteButton/deleteButton';
+import useGetSearchProducts from '../hooks/useGetSearchProducts';
 
 const { width, height } = Dimensions.get('window');
 
 export default function Home() {
 
     const { data, page, setPage, loading, setLoading } = useGetProducts();
+    const { getSearchProducts, filteredProducts } = useGetSearchProducts();
     const [modal, setModal] = useState<boolean>(false);
     const [deleteModal, setDeleteModal] = useState<boolean>(false)
     const [item, setItem] = useState<Product | null>(null);
@@ -33,6 +35,11 @@ export default function Home() {
         setModal(!modal)
     }
 
+    const handleSearch = async (text: string) => {
+        const response = await getSearchProducts(text)
+    }
+
+    const renderData = filteredProducts.length > 0 ? filteredProducts : data?.data;
     return (
         <View
             style={{ height: "100%", width: width, display: 'flex' }}
@@ -90,7 +97,32 @@ export default function Home() {
                     </View>
                 </View>
             </Modal>
-            <View style={{ width: width, height: "90%" }}>
+            <View style={{ width: width, height: "100%" }}>
+                <View
+                    style={{ width: width }}
+                    className='flex-row h-[60px] bg-[#00A995] items-center justify-around'         >
+                    <View
+                        style={{ opacity: filteredProducts.length === 0 ? 1 : 0.2, pointerEvents: filteredProducts.length === 0 ? 'auto' : 'none' }}
+                        className="flex-row justify-around items-center w-[30%] h-[70%]">
+                        <TouchableOpacity onPress={() => handlePageChange(page - 1)} disabled={page === 1}
+                            className='disabled:opacity-20 rounded-full bg-[#0000001d] p-1' >
+                            <AntDesign name="left" size={15} color="white" />
+                        </TouchableOpacity>
+                        <Text className="text-lg font-semibold text-white">{page} / {data?.pagination.totalPages}</Text>
+                        <TouchableOpacity onPress={() => handlePageChange(page + 1)} disabled={page === data?.pagination.totalPages}
+                            className='disabled:opacity-20 rounded-full bg-[#0000001d] p-1' >
+                            <AntDesign name="right" size={15} color="white" />
+                        </TouchableOpacity>
+                    </View>
+                    <View className="flex-row items-center bg-white rounded-md shadow-md px-2 w-[60%] h-[70%]">
+                        <AntDesign name="search1" size={15} color="gray" />
+                        <TextInput
+                            onChangeText={handleSearch}
+                            placeholder="Buscar..."
+                            className="flex-1 h-[90%] text-[10px] text-black font-normal"
+                        />
+                    </View>
+                </View>
                 <ScrollView
                     horizontal
                     contentContainerStyle={{ backgroundColor: "#fff" }}
@@ -111,7 +143,7 @@ export default function Home() {
                             <DataTable.Title className='justify-center'>Cadastro</DataTable.Title>
                         </DataTable.Header>
                         <FlatList
-                            data={data?.data}
+                            data={renderData}
                             renderItem={({ item }) => (
                                 <DataTable.Row
                                     style={{ backgroundColor: item.id % 2 === 0 ? '#c6c6c612' : '#fff' }}>
@@ -147,20 +179,6 @@ export default function Home() {
                         />
                     </DataTable>
                 </ScrollView>
-            </View>
-
-            <View
-                style={{ elevation: 5 }}
-                className="flex-row justify-between items-center bg-[#e8e8e8] h-[10%] px-5">
-                <TouchableOpacity onPress={() => handlePageChange(page - 1)} disabled={page === 1}
-                    className='disabled:opacity-20' >
-                    <AntDesign name="left" size={24} color="black" />
-                </TouchableOpacity>
-                <Text className="text-lg">{page} / {data?.pagination.totalPages}</Text>
-                <TouchableOpacity onPress={() => handlePageChange(page + 1)} disabled={page === data?.pagination.totalPages}
-                    className='disabled:opacity-20' >
-                    <AntDesign name="right" size={24} color="black" />
-                </TouchableOpacity>
             </View>
         </View>
     );
