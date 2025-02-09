@@ -49,5 +49,5 @@ export default function useGetProducts() {
             })
     }, [page])
 
-    return { data, error, page, pagesize, setPagesize, setPage, loading, setLoading }
+    return { data, setData, error, page, pagesize, setPagesize, setPage, loading, setLoading }
 }

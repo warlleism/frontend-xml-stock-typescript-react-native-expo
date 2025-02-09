@@ -1,25 +1,33 @@
+import { Product } from "@/app/hooks/useGetProducts";
 import Feather from "@expo/vector-icons/Feather";
 import axios from "axios";
 import { Text, TouchableOpacity } from "react-native";
 import { Toast } from "toastify-react-native";
 
-export default function DeleteButton({ setModal, url, id }: { setModal: any, url: string, id: number }) {
+export default function DeleteButton({ data, setData, setModal, url, id }: { data: any, setData: any, setModal: any, url: string, id: number }) {
 
-    async function Submit() {
+    const handleDelete = (id: number) => {
+        const deleteItem = data?.data.filter((item: Product) => item.id !== id)
+        setData({ ...data, data: deleteItem })
+    }
+
+
+    const Submit = async () => {
         try {
-            console.log(url);
-            const response = await axios.get(url)
-            console.log(response);
-            if (response.status == 201) {
+            const response = await axios.delete(`http://192.168.0.167:3000/product/delete?id=${id}`)
+            if (response.status == 200) {
+                handleDelete(id);
                 Toast.success("Excluído com sucesso!");
             } else {
                 Toast.error("Erro ao excluir!");
             }
         } catch (error) {
             console.log(error);
+            Toast.error("Erro ao excluir!");
         } finally {
             setModal(false);
         }
+
     }
     return (
         <TouchableOpacity

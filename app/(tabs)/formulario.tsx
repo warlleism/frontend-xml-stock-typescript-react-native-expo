@@ -4,7 +4,6 @@ import BackButton from "../components/backButton/backButton";
 import { useState, useRef } from "react";
 import ActiveFormScreen from "../components/forms/actives_form";
 import CategoryFormScreen from "../components/forms/category_form";
-import ToastManager from "toastify-react-native";
 const { width } = Dimensions.get('window');
 
 export default function Formularios() {
@@ -20,12 +19,6 @@ export default function Formularios() {
 
     return (
         <View className="flex-1 w-full bg-[#fff]">
-            <ToastManager
-                width={width - 50}
-                animationIn={"zoomIn"}
-                animationOut={"zoomOut"}
-                duration={2000}
-            />
             <BackButton />
             <View className="w-full flex-row justify-center items-center mb-10">
                 <View className="relative w-[90%]">

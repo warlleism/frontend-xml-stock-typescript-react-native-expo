@@ -13,7 +13,7 @@ const { width, height } = Dimensions.get('window');
 
 export default function Home() {
 
-    const { data, page, setPage, loading, setLoading } = useGetProducts();
+    const { data, setData, page, setPage, loading, setLoading } = useGetProducts();
     const { getSearchProducts, filteredProducts } = useGetSearchProducts();
     const [modal, setModal] = useState<boolean>(false);
     const [deleteModal, setDeleteModal] = useState<boolean>(false)
@@ -86,7 +86,7 @@ export default function Home() {
                     <Text className="text-[19px] font-bold text-start">Confirmar Exclusão</Text>
                     <Text className="text-lg text-start">Você tem certeza que deseja excluir este item?</Text>
                     <View className="flex-row justify-between mt-5">
-                        <DeleteButton setModal={setDeleteModal} url={"http://192.168.0.167:3000/product/get"} id={item?.id as number} />
+                        <DeleteButton data={data} setData={setData} setModal={setDeleteModal} url={"http://192.168.0.167:3000/product/get"} id={item?.id as number} />
                         <TouchableOpacity
                             className="w-[48%] items-center justify-center bg-[#00A995] h-12 rounded-full shadow-md"
                             onPress={() => setDeleteModal(!deleteModal)}>
